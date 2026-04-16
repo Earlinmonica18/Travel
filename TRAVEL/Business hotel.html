@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Business Hotel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#0f172a;
+  color:white;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:220px;
+  height:100vh;
+  background:#111827;
+  padding:15px;
+  position:fixed;
+}
+.sidebar button{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  background:#1f2937;
+  color:white;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:16px;
+}
+.sidebar button:hover{background:#2563eb}
+
+/* MAIN FIX */
+.main{
+  margin-left:220px;
+  padding:25px;
+}
+
+/* GRID BIG */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:25px;
+}
+
+/* BIG CARD */
+.card{
+  background:#fff;
+  color:#000;
+  border-radius:20px;
+  padding:25px;
+  text-align:center;
+  min-height:300px;
+}
+
+/* IMAGE BIG */
+.light-image,.fan-img,.music-img{
+  width:140px;
+  display:block;
+  margin:auto;
+}
+
+/* FAN */
+.fan-img{
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  object-fit:cover;
+  margin:auto;
+}
+@keyframes spin{100%{transform:rotate(360deg)}}
+.slow{animation:spin 3s linear infinite}
+.medium{animation:spin 1.5s linear infinite}
+.fast{animation:spin .7s linear infinite}
+
+
+/* FOOD BIG */
+.food{
+  background:#111827;
+  padding:15px;
+  border-radius:15px;
+}
+.food img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+  border-radius:12px;
+}
+.qty{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.qty button{
+  width:35px;
+  height:35px;
+  font-size:18px;
+}
+
+/* BILL BIG */
+.bill{
+  background:#111827;
+  padding:15px;
+  margin:10px 0;
+  border-radius:10px;
+  font-size:18px;
+}
+h2{font-size:28px}
+h3{font-size:20px}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+<h2>🏨 HOTEL PRO</h2>
+<button onclick="show('smart')">🏠 Smart</button>
+<button onclick="show('food')">🍔 Food</button>
+<button onclick="show('bill')">💰 Bill</button>
+</div>
+
+<div class="main">
+
+<!-- SMART -->
+<div id="smart">
+<h2>Smart Control</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>💡 Light</h3>
+<img src="https://cdn-icons-png.flaticon.com/512/1040/1040230.png" id="lamp" class="light-image">
+<p id="lightStatus">OFF</p>
+<button onclick="lightOn()">ON</button>
+<button onclick="lightOff()">OFF</button>
+</div>
+
+<div class="card row-1">
+<h3>🌀 Fan</h3>
+<img src="https://images.pexels.com/photos/10397597/pexels-photo-10397597.jpeg" id="fan" class="fan-img">
+<p id="fanStatus">OFF</p>
+
+<!-- 🔥 SPEED CONTROL (NEW FIX) -->
+<input type="range" min="1" max="3" value="1" id="speed">
+
+<br>
+<button onclick="setSpeed(1)">Slow</button>
+<button onclick="setSpeed(2)">Medium</button>
+<button onclick="setSpeed(3)">Fast</button>
+
+<br>
+<button onclick="fanOn()">ON</button>
+<button onclick="fanOff()">OFF</button>
+</div>
+
+<div class="card">
+<h3>💧 Water Intake</h3>
+<p>Drink Water Goal</p>
+<h2><span id="water">0</span> ml</h2>
+<button onclick="addWater(250)">+250ml</button>
+<button onclick="addWater(500)">+500ml</button>
+<button onclick="resetWater()">Reset</button>
+</div>
+
+<div class="card">
+<h3>🎵 Music</h3>
+<img src="https://images.pexels.com/photos/30428608/pexels-photo-30428608.jpeg" id="disc" class="music-img">
+<audio id="audio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<button onclick="playMusic()">Play</button>
+<button onclick="pauseMusic()">Pause</button>
+</div>
+
+</div>
+</div>
+
+<!-- FOOD -->
+<div id="food" style="display:none">
+<h2>Food & Drinks</h2>
+<div class="grid" id="menu"></div>
+</div>
+
+<!-- BILL -->
+<div id="bill" style="display:none">
+<h2>Bill</h2>
+<div id="billItems"></div>
+<h2>Total: ₹<span id="total">0</span></h2>
+<button onclick="checkout()">Place Order</button>
+</div>
+
+<button onclick="window.location.href='index.html'" style="display:block; margin:20px auto;">Back to Home</button>
+
+</div>
+
+<script>
+
+/* NAV */
+function show(id){
+ document.querySelectorAll(".main > div").forEach(d=>d.style.display="none");
+ document.getElementById(id).style.display="block";
+}
+
+/* LIGHT */
+function lightOn(){lamp.style.filter="drop-shadow(0 0 25px yellow)";lightStatus.innerText="ON";}
+function lightOff(){lamp.style.filter="none";lightStatus.innerText="OFF";}
+
+/* FAN */
+function setSpeed(val){
+ speed.value = val;
+ if(fanStatus.innerText==="ON") fanOn();
+}
+
+function fanOn(){
+ let s=speed.value;
+ fan.classList.remove("slow","medium","fast");
+
+ if(s==1) fan.classList.add("slow");
+ else if(s==2) fan.classList.add("medium");
+ else fan.classList.add("fast");
+
+ fanStatus.innerText="ON";
+}
+function fanOff(){
+ fan.classList.remove("slow","medium","fast");
+ fanStatus.innerText="OFF";
+}
+
+
+/* MUSIC */
+function playMusic(){audio.play();disc.classList.add("slow");}
+function pauseMusic(){audio.pause();disc.classList.remove("slow");}
+
+/* WATER */
+let water=0;
+function addWater(x){
+ water+=x;
+ document.getElementById("water").innerText=water;
+}
+function resetWater(){
+ water=0;
+ document.getElementById("water").innerText=0;
+}
+
+/* FOOD */
+let foods=[
+ {name:"Pizza",price:200,img:"https://images.pexels.com/photos/825661/pexels-photo-825661.jpeg"},
+ {name:"Burger",price:120,img:"https://images.pexels.com/photos/1639562/pexels-photo-1639562.jpeg"},
+ {name:"Pasta",price:180,img:"https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg"},
+ {name:"Fried Rice",price:150,img:"https://images.pexels.com/photos/723198/pexels-photo-723198.jpeg"},
+ {name:"Chicken",price:250,img:"https://images.pexels.com/photos/616354/pexels-photo-616354.jpeg"},
+ {name:"Coffee",price:80,img:"https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg"},
+ {name:"Juice",price:90,img:"https://images.pexels.com/photos/96974/pexels-photo-96974.jpeg"},
+ {name:"Cold Drink",price:60,img:"https://images.pexels.com/photos/616833/pexels-photo-616833.jpeg"}
+];
+
+let cart={}, total=0;
+
+function renderFood(){
+ let menu=document.getElementById("menu");
+ foods.forEach((f,i)=>{
+  menu.innerHTML+=`
+  <div class="food">
+    <img src="${f.img}">
+    <h3>${f.name}</h3>
+    <p>₹${f.price}</p>
+    <div class="qty">
+      <button onclick="changeQty(${i},-1)">-</button>
+      <span id="q${i}">0</span>
+      <button onclick="changeQty(${i},1)">+</button>
+    </div>
+  </div>`;
+ });
+}
+renderFood();
+
+function changeQty(i,c){
+ if(!cart[i]) cart[i]=0;
+ cart[i]+=c;
+ if(cart[i]<0) cart[i]=0;
+ document.getElementById("q"+i).innerText=cart[i];
+ updateBill();
+}
+
+function updateBill(){
+ let box=document.getElementById("billItems");
+ box.innerHTML="";
+ total=0;
+
+ for(let i in cart){
+  if(cart[i]>0){
+    let f=foods[i];
+    let sub=f.price*cart[i];
+    total+=sub;
+    box.innerHTML+=`<div class="bill">${f.name} x ${cart[i]} = ₹${sub}</div>`;
+  }
+ }
+ document.getElementById("total").innerText=total;
+}
+
+function checkout(){
+ alert("Order Placed ₹"+total);
+ cart={};
+ total=0;
+ document.querySelectorAll("[id^=q]").forEach(q=>q.innerText=0);
+ updateBill();
+}
+
+</script>
+
+</body>
+</html>

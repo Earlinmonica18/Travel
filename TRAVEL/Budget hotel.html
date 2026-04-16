@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Budget Hotel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:Arial;
+  background:linear-gradient(135deg,#1e1e2f,#2c3e50);
+  color:#fff;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:20px;
+  padding:20px;
+}
+.row-1{grid-column:span 4;}
+.row-2{grid-column:span 3;}
+.center{grid-column:span 12;text-align:center;}
+
+/* CARD */
+.card{
+  background:#fff;
+  color:#000;
+  padding:20px;
+  border-radius:15px;
+  text-align:center;
+}
+
+/* BUTTON */
+button{
+  padding:8px 12px;
+  margin:5px;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  background:#3498db;
+  color:#fff;
+}
+
+/* LIGHT */
+.light-img{width:100px}
+.light-on{filter:drop-shadow(0 0 25px yellow)}
+
+/* 🌀 FAN (CIRCLE FIX) */
+.fan-img{
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  object-fit:cover;
+  margin:auto;
+}
+@keyframes spin{100%{transform:rotate(360deg)}}
+.slow{animation:spin 3s linear infinite}
+.medium{animation:spin 1.5s linear infinite}
+.fast{animation:spin .7s linear infinite}
+
+/* 📺 TV */
+.tv-img{
+  width:140px;
+  height:100px;
+  object-fit:cover;
+  border-radius:10px;
+}
+.tv-on{
+  filter:brightness(1.5);
+  box-shadow:0 0 20px lime;
+}
+
+/* 🍔 FOOD */
+.food-list button{
+  display:block;
+  width:100%;
+  margin:5px 0;
+}
+
+/* BILL */
+.bill-box{
+  background:#f1f1f1;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
+}
+
+/* 🏠 ROOM BIGGER */
+.room-img{
+  width:100%;
+  height:280px;
+  object-fit:cover;
+  border-radius:10px;
+}
+.room-img.big{
+  height:380px;
+}
+
+/* FACILITY */
+.fac-btn{
+  display:block;
+  width:100%;
+  margin:5px 0;
+  background:#16a085;
+}
+.off{background:#7f8c8d}
+
+/* 🔌 CHARGING */
+.charge-box{
+  font-size:20px;
+  margin-top:10px;
+}
+.charging{
+  color:green;
+}
+</style>
+</head>
+
+<body>
+
+<div class="grid">
+
+<!-- LIGHT -->
+<div class="card row-1">
+<h3>💡 Light</h3>
+<img src="https://cdn-icons-png.flaticon.com/512/1040/1040230.png" id="lamp" class="light-img">
+<p id="lightStatus">OFF</p>
+<button onclick="lightOn()">ON</button>
+<button onclick="lightOff()">OFF</button>
+</div>
+
+<!-- 🌀 FAN -->
+<div class="card row-1">
+<h3>🌀 Fan</h3>
+<img src="https://images.pexels.com/photos/10397597/pexels-photo-10397597.jpeg" id="fan" class="fan-img">
+<p id="fanStatus">OFF</p>
+
+<!-- 🔥 SPEED CONTROL (NEW FIX) -->
+<input type="range" min="1" max="3" value="1" id="speed">
+
+<br>
+<button onclick="setSpeed(1)">Slow</button>
+<button onclick="setSpeed(2)">Medium</button>
+<button onclick="setSpeed(3)">Fast</button>
+
+<br>
+<button onclick="fanOn()">ON</button>
+<button onclick="fanOff()">OFF</button>
+</div>
+
+<!-- 📺 TV -->
+<div class="card row-1">
+<h3>📺 TV</h3>
+<img src="https://images.pexels.com/photos/276514/pexels-photo-276514.jpeg" id="tvImg" class="tv-img">
+<p id="tvStatus">OFF</p>
+<button onclick="tvOn()">ON</button>
+<button onclick="tvOff()">OFF</button>
+</div>
+
+<!-- FOOD -->
+<div class="card row-2">
+<h3>🍔 Food</h3>
+<div class="food-list">
+<button onclick="addItem('Pizza',150)">Pizza ₹150</button>
+<button onclick="addItem('Burger',100)">Burger ₹100</button>
+<button onclick="addItem('Pasta',120)">Pasta ₹120</button>
+</div>
+
+<div class="bill-box">
+<p id="billItems"></p>
+<h3>Total: ₹<span id="total">0</span></h3>
+<button onclick="placeOrder()">Order</button>
+</div>
+</div>
+
+<!-- 🔌 MOBILE CHARGING -->
+<div class="card row-2">
+<h3>🔌 Mobile Charging</h3>
+<button onclick="toggleCharge()">Plug ON/OFF</button>
+<div id="chargeStatus" class="charge-box">Not Charging ❌</div>
+</div>
+
+<!-- FACILITY -->
+<div class="card row-2">
+<h3>🏨 Facilities</h3>
+<button class="fac-btn off" onclick="toggle(this)">WiFi OFF</button>
+<button class="fac-btn off" onclick="toggle(this)">Room Service OFF</button>
+</div>
+
+<!-- ROOMS -->
+<div class="card center">
+<h3>🏠 Rooms</h3>
+<img src="https://images.pexels.com/photos/21005729/pexels-photo-21005729.jpeg" id="roomImg" class="room-img">
+<br>
+<button onclick="setRoom('bedroom')">Bedroom</button>
+<button onclick="setRoom('kitchen')">Kitchen</button>
+<button onclick="setRoom('living')">Living</button>
+<button onclick="setRoom('bathroom')">Bathroom</button>
+</div>
+
+<button onclick="window.location.href='index.html'" style="display:block; margin:20px auto;">Back to Home</button>
+</div>
+
+<script>
+
+/* LIGHT */
+function lightOn(){lamp.classList.add("light-on");lightStatus.innerText="ON";}
+function lightOff(){lamp.classList.remove("light-on");lightStatus.innerText="OFF";}
+
+/* 🌀 FAN SPEED CONTROL FIX */
+function setSpeed(val){
+ speed.value = val;
+ if(fanStatus.innerText==="ON") fanOn();
+}
+
+function fanOn(){
+ let s=speed.value;
+ fan.classList.remove("slow","medium","fast");
+
+ if(s==1) fan.classList.add("slow");
+ else if(s==2) fan.classList.add("medium");
+ else fan.classList.add("fast");
+
+ fanStatus.innerText="ON";
+}
+function fanOff(){
+ fan.classList.remove("slow","medium","fast");
+ fanStatus.innerText="OFF";
+}
+
+/* TV */
+function tvOn(){
+ tvImg.classList.add("tv-on");
+ tvStatus.innerText="ON";
+}
+function tvOff(){
+ tvImg.classList.remove("tv-on");
+ tvStatus.innerText="OFF";
+}
+
+/* FOOD */
+let total=0,items={};
+function addItem(n,p){
+ if(!items[n]) items[n]=0;
+ items[n]++; total+=p; updateBill();
+}
+function updateBill(){
+ let t="";
+ for(let i in items){t+=`${i} x ${items[i]}<br>`;}
+ billItems.innerHTML=t;
+ document.getElementById("total").innerText=total;
+}
+function placeOrder(){
+ alert("Order ₹"+total);
+ total=0; items={}; updateBill();
+}
+
+/* 🔌 CHARGING */
+let charging=false;
+function toggleCharge(){
+ charging=!charging;
+ if(charging){
+  chargeStatus.innerHTML="Charging ⚡";
+  chargeStatus.classList.add("charging");
+ }else{
+  chargeStatus.innerHTML="Not Charging ❌";
+  chargeStatus.classList.remove("charging");
+ }
+}
+
+/* FACILITY */
+function toggle(btn){
+ if(btn.classList.contains("off")){
+  btn.classList.remove("off");
+  btn.innerText=btn.innerText.replace("OFF","ON");
+ }else{
+  btn.classList.add("off");
+  btn.innerText=btn.innerText.replace("ON","OFF");
+ }
+}
+
+/* ROOMS */
+function setRoom(r){
+ let img={
+  bedroom:"https://images.pexels.com/photos/262048/pexels-photo-262048.jpeg",
+  kitchen:"https://images.pexels.com/photos/5824485/pexels-photo-5824485.jpeg",
+  living:"https://images.pexels.com/photos/276746/pexels-photo-276746.jpeg",
+  bathroom:"https://images.pexels.com/photos/1454804/pexels-photo-1454804.jpeg"
+ }
+ roomImg.src=img[r];
+ roomImg.classList.add("big");
+}
+
+</script>
+
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Family Hotel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background: url('https://images.pexels.com/photos/36639317/pexels-photo-36639317.jpeg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.main{padding:20px;}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:20px;
+}
+
+.row-1{grid-column:span 4;}
+.row-2{grid-column:span 3;}
+.center{grid-column:span 12;}
+
+.card{
+  background:#fff;
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,.15);
+  min-height:240px;
+}
+
+/* IMAGE */
+.light-image{width:120px;display:block;margin:auto}
+.music-img{width:130px;border-radius:50%;display:block;margin:auto}
+
+/* FAN */
+.fan-img{
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  object-fit:cover;
+  margin:auto;
+}
+@keyframes spin{100%{transform:rotate(360deg)}}
+.slow{animation:spin 3s linear infinite}
+.medium{animation:spin 1.5s linear infinite}
+.fast{animation:spin .7s linear infinite}
+
+
+/* 🔥 FOOD FIX */
+.menu{
+  display:flex;
+  justify-content:space-around;
+  gap:20px;
+  margin-top:15px;
+}
+
+.menu div{
+  text-align:center;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.menu img{
+  width:100px;   /* 👈 BIG SIZE */
+  height:100px;
+  object-fit:contain;
+  transition:0.3s;
+}
+
+.menu div:hover{
+  transform:scale(1.2);
+}
+
+.menu div:hover img{
+  filter:drop-shadow(0 0 10px green);
+}
+
+/* ROOMS */
+.room-img{
+  width:100%;
+  height:150px;
+  object-fit:cover;
+  border-radius:12px;
+  margin-bottom:10px;
+}
+/* VOICE */
+@keyframes pulse {
+  0%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.2);opacity:0.6}
+  100%{transform:scale(1);opacity:1}
+}
+
+.mic-active{
+  animation:pulse 1s infinite;
+  filter:drop-shadow(0 0 10px red);
+}
+
+.mic-active{
+  animation:pulse 1s infinite;
+  filter:drop-shadow(0 0 10px red);
+}
+
+
+/* GAME */
+canvas{border-radius:10px}
+@keyframes gameGlow {
+  0%{box-shadow:0 0 5px lime}
+  50%{box-shadow:0 0 20px cyan}
+  100%{box-shadow:0 0 5px rgb(6, 139, 205)}
+}
+
+.game-active{
+  animation:gameGlow 1s infinite;
+  border:2px solid lime;
+}
+.game-img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:10px;
+}
+.game-background{
+  background-image: url("https://images.pexels.com/photos/21365192/pexels-photo-21365192.jpeg");
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:10px;
+  z-index:-1;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="main">
+<div class="grid">
+
+<!-- ROW 1 -->
+
+<div class="card lamp row-1">
+<h3>Living Room Light</h3>
+<img src="https://cdn-icons-png.flaticon.com/512/1040/1040230.png" id="lampImg" class="light-image">
+<p>Status: <span id="lightStatus">OFF</span></p>
+<button onclick="lightOn()">ON</button>
+<button onclick="lightOff()">OFF</button>
+</div>
+
+<div class="card row-1">
+<h3>🌀 Fan</h3>
+<img src="https://images.pexels.com/photos/10397597/pexels-photo-10397597.jpeg" id="fan" class="fan-img">
+<p id="fanStatus">OFF</p>
+
+<!-- 🔥 SPEED CONTROL (NEW FIX) -->
+<input type="range" min="1" max="3" value="1" id="speed">
+
+<br>
+<button onclick="setSpeed(1)">Slow</button>
+<button onclick="setSpeed(2)">Medium</button>
+<button onclick="setSpeed(3)">Fast</button>
+
+<br>
+<button onclick="fanOn()">ON</button>
+<button onclick="fanOff()">OFF</button>
+</div>
+
+<div class="card row-1">
+<h3>Smart TV</h3>
+<video id="tvScreen" width="220" controls>
+<source src="https://www.w3schools.com/html/mov_bbb.mp4">
+</video>
+<p>Status: <span id="tvStatus">OFF</span></p>
+<button onclick="tvOn()">ON</button>
+<button onclick="tvOff()">OFF</button>
+</div>
+
+<div class="card row-1">
+<h3>Voice Control</h3>
+<img src="https://cdn-icons-png.flaticon.com/512/61/61088.png" id="micImg" width="80">
+<button onclick="startVoice()">Speak</button>
+<p id="voiceText"></p>
+</div>
+
+<!-- ROW 2 -->
+
+<div class="card row-2">
+<h3>Music Player</h3>
+<img src="https://images.pexels.com/photos/30428608/pexels-photo-30428608.jpeg" id="cover" class="music-img">
+<audio id="audio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<button onclick="playMusic()">Play</button>
+<button onclick="pauseMusic()">Pause</button>
+</div>
+
+<div class="card row-2">
+<h3>🏠 Rooms</h3>
+<img src="https://images.pexels.com/photos/15930255/pexels-photo-15930255.jpeg" id="roomImg" class="room-img">
+
+<button onclick="setRoom('bedroom')">Bedroom</button>
+<button onclick="setRoom('kitchen')">Kitchen</button>
+<button onclick="setRoom('living')">Living</button>
+<button onclick="setRoom('bathroom')">Bathroom</button>
+</div>
+
+<!-- ✅ FOOD FIXED -->
+<!-- ONLY FIXED PARTS — KEEP YOUR CSS SAME -->
+
+<!-- ✅ FOOD FIX (structure corrected only) -->
+<div class="card row-2 center">
+<h3>Food Menu</h3>
+
+<div class="menu">
+  <div onclick="addToCart('Pizza',150,this)">
+    <img src="https://cdn-icons-png.flaticon.com/512/1404/1404945.png">
+    <p>Pizza ₹150</p>
+  </div>
+
+  <div onclick="addToCart('Burger',100,this)">
+    <img src="https://cdn-icons-png.flaticon.com/512/877/877951.png">
+    <p>Burger ₹100</p>
+  </div>
+
+  <div onclick="addToCart('Drink',50,this)">
+    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png">
+    <p>Drink ₹50</p>
+  </div>
+</div>
+
+<!-- ✅ Cart UI added -->
+<div id="cartItems"></div>
+
+<p>Total ₹<span id="totalPrice">0</span></p>
+</div>
+
+<!-- ✅ WATER (moved outside correctly) -->
+<div class="card row-2 center">
+<h3>💧 Water</h3>
+<p><span id="water">0</span> ml</p>
+<button onclick="drink()">+250ml</button>
+<button onclick="resetWater()">Reset</button>
+<div id="waterInfo" style="
+  margin-top:10px;
+  padding:10px;
+  background:#e0f7ff;
+  border-radius:10px;
+  font-size:14px;"></div>
+
+<button onclick="undoWater()">↩ Undo Last</button>
+</div>
+
+<!-- ROW 3 -->
+
+<div class="card row-2 center">
+<h3>🎮 Real Game</h3>
+<canvas src="https://images.pexels.com/photos/21365192/pexels-photo-21365192.jpeg" id="gameCanvas" width="300" height="200"></canvas>
+<button onclick="startGame()">▶ Start</button>
+<button onclick="stopGame()">⏹ Stop</button>
+<button onclick="resetGame()">🔄 Reset</button>
+
+<p>Score: <span id="score">0</span></p>
+</div>
+<button onclick="window.location.href='index.html'" style="display:block; margin:20px auto;">Back to Home</button>
+
+<script>
+
+/* SAME JS (NO CHANGE) */
+/* LIGHT */
+function lightOn(){
+  let lamp = document.getElementById("lampImg");
+  lamp.style.filter = "drop-shadow(0 0 25px yellow)";
+  lightStatus.innerText = "ON";
+}
+
+function lightOff(){
+  let lamp = document.getElementById("lampImg");
+  lamp.style.filter = "none";
+  lightStatus.innerText = "OFF";
+}
+
+/* FAN */
+function setSpeed(val){
+ speed.value = val;
+ if(fanStatus.innerText==="ON") fanOn();
+}
+
+function fanOn(){
+ let s=speed.value;
+ fan.classList.remove("slow","medium","fast");
+
+ if(s==1) fan.classList.add("slow");
+ else if(s==2) fan.classList.add("medium");
+ else fan.classList.add("fast");
+
+ fanStatus.innerText="ON";
+}
+function fanOff(){
+ fan.classList.remove("slow","medium","fast");
+ fanStatus.innerText="OFF";
+}
+
+/* MUSIC */
+function playMusic(){audio.play();}
+function pauseMusic(){audio.pause();}
+
+/* TV */
+function tvOn(){
+  tvScreen.play();
+  tvStatus.innerText="ON";
+}
+function tvOff(){
+  tvScreen.pause();
+  tvStatus.innerText="OFF";
+}
+
+/* FOOD */
+let cart=[];
+
+function addToCart(name,price,el){
+
+  el.classList.toggle("selected");
+
+  let index = cart.findIndex(i=>i.name===name);
+
+  if(index>-1){
+    cart.splice(index,1);
+  }else{
+    cart.push({name,price});
+  }
+
+  updateCart();
+}
+
+function updateCart(){
+  let box=document.getElementById("cartItems");
+  let total=0;
+  box.innerHTML="";
+
+  cart.forEach((item,i)=>{
+    total+=item.price;
+
+    box.innerHTML+=`
+      <div style="display:flex;justify-content:space-between;margin:5px 0;">
+        <span>${item.name} - ₹${item.price}</span>
+        <button onclick="removeItem(${i})">❌</button>
+      </div>
+    `;
+  });
+
+  totalPrice.innerText=total;
+}
+
+function removeItem(i){
+  cart.splice(i,1);
+  document.querySelectorAll(".menu div")[i].classList.remove("selected");
+  updateCart();
+}
+
+/* WATER */
+/* 💧 WATER UPGRADED SYSTEM */
+let w = 0;
+let waterHistory = [];
+
+function drink(){
+  w += 250;
+  waterHistory.push(250);
+  updateWater();
+}
+
+function resetWater(){
+  w = 0;
+  waterHistory = [];
+  updateWater();
+}
+
+function undoWater(){
+  if(waterHistory.length > 0){
+    w -= waterHistory.pop();
+    if(w < 0) w = 0;
+    updateWater();
+  }
+}
+
+function updateWater(){
+
+  document.getElementById("water").innerText = w;
+
+  // extra info (auto display if element exists)
+  let infoBox = document.getElementById("waterInfo");
+  if(infoBox){
+    let glasses = Math.floor(w / 250);
+    let status = "";
+
+    if(w == 0) status = "No water 💧";
+    else if(w < 1000) status = "Hydration low ⚠️";
+    else if(w < 2000) status = "Good 👍";
+    else status = "Excellent 💪";
+
+    infoBox.innerHTML = `
+      <p>🥤 Glasses: ${glasses}</p>
+      <p>📊 Status: ${status}</p>
+      <p>📦 Total Intake: ${w} ml</p>
+    `;
+  }
+}
+
+/* ROOMS (already correct) */
+function setRoom(r){
+ let img={
+  bedroom: "https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg",
+      kitchen: "https://images.pexels.com/photos/5824883/pexels-photo-5824883.jpeg",
+      living: "https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg",
+      bathroom: "https://images.pexels.com/photos/1910472/pexels-photo-1910472.jpeg"
+  }
+ roomImg.src=img[r];
+}
+/* VOICE (FIXED) */
+function startVoice(){
+
+  let mic = micImg;
+  let text = voiceText;
+
+  let rec = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+  mic.classList.add("mic-active");
+  text.innerText="Listening... 🎤";
+
+  rec.start();
+
+  rec.onresult = e=>{
+    let cmd = e.results[0][0].transcript.toLowerCase();
+    text.innerText=cmd;
+
+    mic.classList.remove("mic-active");
+
+    if(cmd.includes("light on")) lightOn();
+    if(cmd.includes("light off")) lightOff();
+    if(cmd.includes("fan on")) fanOn();
+    if(cmd.includes("fan off")) fanOff();
+    if(cmd.includes("music")) playMusic();
+    if(cmd.includes("stop")) pauseMusic();
+  }
+
+  rec.onerror=()=>{
+    mic.classList.remove("mic-active");
+    text.innerText="Error ❌";
+  }
+}
+
+
+/* GAME */
+let bg = new Image();
+bg.src = "https://images.pexels.com/photos/21365192/pexels-photo-21365192.jpeg";
+
+/* 🎮 OBSTACLE GAME */
+
+let canvas = document.getElementById("gameCanvas");
+let ctx = canvas.getContext("2d");
+
+let player = { x: 20, y: 100, size: 20 };
+let obstacle = { x: 300, y: 50, w: 20, h: 40 };
+
+let score = 0;
+let gameInterval = null;
+let gameRunning = false;
+
+/* ▶ START GAME */
+function startGame(){
+
+  if(gameRunning) return;
+
+  score = 0;
+  player.y = 100;
+  obstacle.x = 300;
+  obstacle.y = Math.random()*150;
+
+  gameRunning = true;
+
+  // glow ON
+  canvas.classList.add("game-active");
+
+  gameInterval = setInterval(updateGame, 30);
+}
+
+/* ⏹ STOP GAME */
+function stopGame(){
+  clearInterval(gameInterval);
+  gameRunning = false;
+
+  // glow OFF
+  canvas.classList.remove("game-active");
+}
+
+function toggleGame(){
+  if(gameRunning){
+    stopGame();
+  }else{
+    startGame();
+  }
+}
+
+function resetGame(){
+  stopGame();
+  score = 0;
+  player.y = 100;
+  obstacle.x = 300;
+  obstacle.y = Math.random()*150;
+  ctx.clearRect(0,0,300,200);
+} 
+
+/* 🔁 GAME LOOP */
+function updateGame(){
+
+  ctx.clearRect(0,0,300,200);
+
+  // PLAYER
+  ctx.fillStyle="lime";
+  ctx.fillRect(player.x,player.y,player.size,player.size);
+
+  // OBSTACLE MOVE
+  obstacle.x -= 5;
+
+  if(obstacle.x < 0){
+    obstacle.x = 300;
+    obstacle.y = Math.random()*150;
+    score++;
+  }
+
+  // DRAW OBSTACLE
+  ctx.fillStyle="red";
+  ctx.fillRect(obstacle.x,obstacle.y,obstacle.w,obstacle.h);
+
+  // COLLISION
+  if(
+    player.x < obstacle.x + obstacle.w &&
+    player.x + player.size > obstacle.x &&
+    player.y < obstacle.y + obstacle.h &&
+    player.y + player.size > obstacle.y
+  ){
+    stopGame();
+    alert("💥 Game Over! Score: " + score);
+  }
+
+  document.getElementById("score").innerText = score;
+}
+
+/* 🎮 CONTROL */
+document.addEventListener("keydown", e=>{
+  if(e.key==="ArrowUp") player.y -= 15;
+  if(e.key==="ArrowDown") player.y += 15;
+});
+
+
+
+</script>
+
+</body>
+</html>
+

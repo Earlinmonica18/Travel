@@ -1,0 +1,94 @@
+/* BACKGROUND FULL COVER */
+
+.home-bg{
+  background:url("https://images.pexels.com/photos/10664000/pexels-photo-10664000.jpeg") no-repeat center/cover;
+}
+.contact.html, hotels.html{
+  background:url("https://images.pexels.com/photos/21856199/pexels-photo-21856199.jpeg") no-repeat center/cover;
+}
+.hotels.html{
+  background:url("https://images.pexels.com/photos/27524867/pexels-photo-27524867.jpeg") no-repeat center/cover;
+}
+
+/* NAVBAR */
+.navbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 30px;
+  background:black;
+  color:white;
+}
+
+.navbar a{
+  color:white;
+  margin:10px;
+  text-decoration:none;
+}
+
+/* HERO CENTER */
+.hero{
+  text-align:center;
+  color:white;
+  margin-top:80px;
+}
+
+/* CARDS CENTER */
+.cards{
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  margin-top:40px;
+  flex-wrap:wrap;
+}
+
+.card{
+  background:white;
+  padding:15px;
+  border-radius:15px;
+  width:250px;
+  text-align:center;
+}
+
+.card img{
+  width:100%;
+  height:150px;
+  border-radius:10px;
+  object-fit:cover;
+}
+
+/* ROOM BUTTONS */
+.room-btns button{
+  margin:3px;
+  padding:5px;
+  font-size:12px;
+}
+
+/* BUTTON */
+button{
+  background:orange;
+  border:none;
+  padding:8px 15px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* POPUP */
+.popup{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+}
+
+.popup-content{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  text-align:center;
+}

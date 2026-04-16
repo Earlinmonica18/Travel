@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Luxury Hotel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background: url('https://images.pexels.com/photos/34638715/pexels-photo-34638715.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  margin:0;font-family:Arial;display:flex}
+
+/* SIDEBAR */
+.sidebar{
+  width:100px;
+  background:#111;
+  color:#fff;
+  text-align:center;
+  padding:10px;
+}
+.phone{
+  width:80px;
+  height:150px;
+  border:3px solid #fff;
+  border-radius:15px;
+  margin:auto;
+  position:relative;
+  background:#000;
+  overflow:hidden;
+}
+
+/* SCREEN */
+.screen{
+  position:absolute;
+  top:10px;
+  left:5px;
+  right:5px;
+  bottom:10px;
+  color:#0f0;
+  font-size:12px;
+  text-align:center;
+}
+
+/* BATTERY */
+.battery{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:20%;
+  background:lime;
+  transition:0.3s;
+}
+
+/* CABLE */
+.cable{
+  width:4px;
+  height:0;
+  background:#fff;
+  margin:auto;
+  transition:0.5s;
+}
+.cable.plugged{
+  height:40px;
+}
+
+/* COLORS */
+.low{background:red}
+.medium{background:orange}
+.full{background:lime}
+
+/* MAIN */
+.main{flex:1;padding:20px;background:#f4f4f4}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+.row-1{grid-column:span 4}
+.row-2{grid-column:span 3}
+.center{grid-column:span 12}
+
+/* CARD */
+.card{
+  background:#fff;
+  padding:15px;
+  border-radius:15px;
+  text-align:center;
+}
+
+/* LIGHT */
+.light-on{filter:drop-shadow(0 0 25px yellow)}
+.rainbow{animation:rainbow 1s infinite}
+@keyframes rainbow{
+  0%{filter:drop-shadow(0 0 20px red)}
+  25%{filter:drop-shadow(0 0 20px blue)}
+  50%{filter:drop-shadow(0 0 20px green)}
+  75%{filter:drop-shadow(0 0 20px orange)}
+  100%{filter:drop-shadow(0 0 20px pink)}
+}
+
+/* FAN */
+.fan-img{
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  object-fit:cover;
+  margin:auto;
+}
+@keyframes spin{100%{transform:rotate(360deg)}}
+.slow{animation:spin 3s linear infinite}
+.medium{animation:spin 1.5s linear infinite}
+.fast{animation:spin .7s linear infinite}
+
+/* ROOM */
+.room-img{width:100%;height:150px;object-fit:cover;border-radius:10px}
+
+/* FOOD */
+ .food-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid #ddd;
+  padding:6px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* SMALL IMAGE */
+.food-item img{
+  width:18px;
+  height:18px;
+}
+
+/* BLUE SELECT */
+.selected{
+  background:#2196f3;
+  color:#fff;
+}
+
+/*vioce control*/
+@keyframes pulse {
+  0%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.2);opacity:0.6}
+  100%{transform:scale(1);opacity:1}
+}
+
+.mic-active{
+  animation:pulse 1s infinite;
+  filter:drop-shadow(0 0 10px red);
+}
+
+/* GAME */
+canvas{border-radius:10px}
+@keyframes gameGlow {
+  0%{box-shadow:0 0 5px lime}
+  50%{box-shadow:0 0 20px cyan}
+  100%{box-shadow:0 0 5px rgb(6, 139, 205)}
+}
+
+.game-active{
+  animation:gameGlow 1s infinite;
+  border:2px solid lime;
+}
+.game-img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:10px;
+}
+.game-background{
+  background-image: url("https://images.pexels.com/photos/21365192/pexels-photo-21365192.jpeg");
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:10px;
+  z-index:-1;
+}
+</style>
+</head>
+
+<body>
+<div class="sidebar">
+
+<h3>📱 Phone</h3>
+
+<!-- 🔒 LOCK SCREEN -->
+<div id="lockScreen" style="background:#000;color:#0f0;padding:10px;border-radius:10px;">
+  <p>🔒 Locked</p>
+  <input type="password" id="pinInput" placeholder="Enter PIN">
+  <button onclick="unlock()">Unlock</button>
+  <p password>Hint: 1234</p>
+</div>
+
+<!-- 📱 PHONE -->
+<div id="phoneUI" style="display:none;">
+
+<div class="phone">
+
+  <!-- BATTERY -->
+  <div class="battery" id="battery"></div>
+
+  <!-- SCREEN -->
+  <div class="screen">
+    <p id="batteryText">20%</p>
+    <p id="statusText">🔋 phone</p>
+  </div>
+
+  <!-- 🔌 CABLE -->
+  <div id="cable" class="cable"></div>
+
+</div>
+
+<button onclick="plugIn()">🔌 Plug In</button>
+<button onclick="plugOut()">❌ Unplug</button>
+
+<button onclick="startCharging()">⚡ Start</button>
+<button onclick="stopCharging()">⏹ Stop</button>
+
+</div>
+
+</div>
+
+<div class="main">
+<div class="grid">
+
+<!-- 🔥 LIGHT (UPDATED) -->
+<div class="card row-1">
+<h3>💡 Light</h3>
+<img id="lamp" src="https://cdn-icons-png.flaticon.com/512/1040/1040230.png" width="80">
+<p id="lightStatus">OFF</p>
+
+<button onclick="lightOn()">ON</button>
+<button onclick="lightOff()">OFF</button>
+<button onclick="startRainbow()">🌈 Rainbow</button>
+<button onclick="stopRainbow()">Stop</button>
+</div>
+
+<!-- 🔥 FAN (UPDATED) -->
+<div class="card row-1">
+<h3>🌀 Fan</h3>
+<img src="https://images.pexels.com/photos/10397597/pexels-photo-10397597.jpeg" id="fan" class="fan-img">
+<p id="fanStatus">OFF</p>
+
+<!-- 🔥 SPEED CONTROL (NEW FIX) -->
+<input type="range" min="1" max="3" value="1" id="speed">
+
+<br>
+<button onclick="setSpeed(1)">Slow</button>
+<button onclick="setSpeed(2)">Medium</button>
+<button onclick="setSpeed(3)">Fast</button>
+
+<br>
+<button onclick="fanOn()">ON</button>
+<button onclick="fanOff()">OFF</button>
+</div>
+
+<!-- 🔥 TV (UPDATED) -->
+<div class="card row-1">
+<h3>📺 Smart TV</h3>
+
+<video id="tv" width="200">
+<source src="https://www.w3schools.com/html/mov_bbb.mp4">
+</video>
+
+<p id="tvStatus">OFF</p>
+
+<button onclick="tvOn()">ON</button>
+<button onclick="tvOff()">OFF</button>
+
+<br>
+
+<button onclick="changeChannel('https://www.w3schools.com/html/mov_bbb.mp4')">News</button>
+<button onclick="changeChannel('https://www.w3schools.com/html/movie.mp4')">Movie</button>
+
+<br>
+
+<input type="range" min="0" max="1" step="0.1" id="volumeSlider">
+</div>
+
+<!-- 🔥 VOICE CONTROL (UPDATED) -->
+<div class="card row-1">
+<h3>🎤 Voice Control</h3>
+<img src="https://cdn-icons-png.flaticon.com/512/61/61088.png" id="micImg" width="80">
+<button onclick="startVoice()">Speak</button>
+<p id="voiceText"></p>
+</div>
+
+<!-- MUSIC -->
+<div class="card row-1">
+<h3>🎵 Music</h3>
+<img id="cover" src="https://images.pexels.com/photos/30428608/pexels-photo-30428608.jpeg" width="80">
+<audio id="audio" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<br>
+<button onclick="playMusic()">Play</button>
+<button onclick="pauseMusic()">Pause</button>
+</div>
+
+<!-- ROOMS -->
+<div class="card row-2">
+<h3>🏠 Rooms</h3>
+<img src="https://images.pexels.com/photos/35639940/pexels-photo-35639940.jpeg" id="roomImg" class="room-img">
+
+<button onclick="setRoom('bedroom')">Bedroom</button>
+<button onclick="setRoom('kitchen')">Kitchen</button>
+<button onclick="setRoom('living')">Living</button>
+<button onclick="setRoom('bathroom')">Bathroom</button>
+</div>
+
+<!-- FOOD -->
+
+<div class="card row-2 center">
+
+  <div class="food-item" onclick="toggleItem(this,150)">
+    <img src="https://cdn-icons-png.flaticon.com/512/1404/1404945.png">
+    <span>Pizza ₹150</span>
+  </div>
+
+  <div class="food-item" onclick="toggleItem(this,100)">
+    <img src="https://cdn-icons-png.flaticon.com/512/877/877951.png">
+    <span>Burger ₹100</span>
+  </div>
+
+  <div class="food-item" onclick="toggleItem(this,80)">
+    <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png">
+    <span>Dosa ₹80</span>
+  </div>
+
+  <div class="food-item" onclick="toggleItem(this,60)">
+    <img src="https://cdn-icons-png.flaticon.com/512/2718/2718224.png">
+    <span>Idli ₹60</span>
+  </div>
+
+  <div class="food-item" onclick="toggleItem(this,70)">
+    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png">
+    <span>Poori ₹70</span>
+  </div>
+
+  <div class="food-item" onclick="toggleItem(this,50)">
+    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046751.png">
+    <span>Chapati ₹50</span>
+  </div>
+<h3>Total ₹ <span id="total">0</span></h3>
+<div id="foodInfo" style="
+  margin-top:10px;
+  padding:10px;
+  background:#fff3e0;
+  border-radius:10px;
+  font-size:14px;
+  text-align:left;"></div>
+
+<button onclick="undoFood()">↩ Undo Last</button>
+<button onclick="clearFood()">🧹 Clear All</button>
+</div>
+
+<!-- WATER -->
+<div class="card row-2 center">
+<h3>💧 Water</h3>
+<p><span id="water">0</span> ml</p>
+<button onclick="drink()">+250ml</button>
+<button onclick="resetWater()">Reset</button>
+<div id="waterInfo" style="
+  margin-top:10px;
+  padding:10px;
+  background:#e0f7ff;
+  border-radius:10px;
+  font-size:14px;"></div>
+
+<button onclick="undoWater()">↩ Undo Last</button>
+</div>
+<!-- GAME -->
+<div class="card center">
+<h3>🎮 Real Game</h3>
+<canvas src="https://images.pexels.com/photos/21365192/pexels-photo-21365192.jpeg" id="gameCanvas" width="300" height="200"></canvas>
+<button onclick="startGame()">▶ Start</button>
+<button onclick="stopGame()">⏹ Stop</button>
+<button onclick="resetGame()">🔄 Reset</button>
+
+<p>Score: <span id="score">0</span></p>
+</div>
+
+<button onclick="window.location.href='index.html'" style="display:block; margin:20px auto;">Back to Home</button>
+
+</div>
+</div>
+
+<script>
+
+
+/* MOBILE CHARGING */
+/* 🔒 LOCK SYSTEM */
+let correctPIN = "1234";
+
+function unlock(){
+ let pin = document.getElementById("pinInput").value;
+
+ if(pin === correctPIN){
+   document.getElementById("lockScreen").style.display = "none";
+   document.getElementById("phoneUI").style.display = "block";
+ }
+ else{
+   alert("Wrong PIN ❌");
+ }
+}
+
+/* 🔊 SOUND */
+let sound = new Audio("https://www.soundjay.com/button/beep-07.wav");
+
+/* 🔋 BATTERY */
+let batteryLevel = 20;
+let interval;
+let isCharging = false;
+
+/* 🔌 PLUG IN */
+function plugIn(){
+ document.getElementById("cable").classList.add("plugged");
+ document.getElementById("statusText").innerText = "⚡ Plugged";
+ sound.play();
+}
+
+/* ❌ UNPLUG */
+function plugOut(){
+ document.getElementById("cable").classList.remove("plugged");
+ document.getElementById("statusText").innerText = "🔋 Unplugged";
+ stopCharging();
+ startDrain();
+}
+
+/* ⚡ START CHARGING */
+function startCharging(){
+
+ if(isCharging) return;
+
+ isCharging = true;
+ document.getElementById("statusText").innerText = "⚡ Charging...";
+ sound.play();
+
+ clearInterval(interval);
+
+ interval = setInterval(()=>{
+   if(batteryLevel < 100){
+     batteryLevel += 1;
+   }
+   updateBattery();
+ },100);
+}
+
+/* ⏹ STOP CHARGING */
+function stopCharging(){
+ isCharging = false;
+ clearInterval(interval);
+ document.getElementById("statusText").innerText = "⏹ Stopped";
+}
+
+/* 🔋 DRAIN MODE */
+function startDrain(){
+
+ clearInterval(interval);
+
+ interval = setInterval(()=>{
+   if(batteryLevel > 0){
+     batteryLevel -= 1;
+   }
+   updateBattery();
+ },200);
+}
+
+/* 🔄 UPDATE */
+function updateBattery(){
+
+ let battery = document.getElementById("battery");
+ let text = document.getElementById("batteryText");
+
+ battery.style.height = batteryLevel + "%";
+ text.innerText = batteryLevel + "%";
+
+ battery.classList.remove("low","medium","full");
+
+ if(batteryLevel < 30){
+   battery.classList.add("low");
+ }
+ else if(batteryLevel < 70){
+   battery.classList.add("medium");
+ }
+ else{
+   battery.classList.add("full");
+ }
+}
+/* 🔥 LIGHT */
+let rainbowInterval;
+
+function lightOn(){
+ lamp.classList.add("light-on");
+ lightStatus.innerText="ON";
+}
+function lightOff(){
+ lamp.classList.remove("light-on");
+ lamp.style.filter="none";
+ lightStatus.innerText="OFF";
+ stopRainbow();
+}
+function startRainbow(){
+ let hue=0;
+ rainbowInterval=setInterval(()=>{
+   hue=(hue+10)%360;
+   lamp.style.filter=`drop-shadow(0 0 25px hsl(${hue},100%,50%))`;
+ },100);
+}
+function stopRainbow(){clearInterval(rainbowInterval);}
+
+/* 🔥 FAN */
+function setSpeed(val){
+ speed.value = val;
+ if(fanStatus.innerText==="ON") fanOn();
+}
+
+function fanOn(){
+ let s=speed.value;
+ fan.classList.remove("slow","medium","fast");
+
+ if(s==1) fan.classList.add("slow");
+ else if(s==2) fan.classList.add("medium");
+ else fan.classList.add("fast");
+
+ fanStatus.innerText="ON";
+}
+function fanOff(){
+ fan.classList.remove("slow","medium","fast");
+ fanStatus.innerText="OFF";
+}
+
+/* 🔥 TV */
+function tvOn(){tv.play();tvStatus.innerText="ON";}
+function tvOff(){tv.pause();tv.currentTime=0;tvStatus.innerText="OFF";}
+function changeChannel(src){tv.src=src;tv.play();tvStatus.innerText="PLAYING";}
+volumeSlider.oninput=function(){tv.volume=this.value;}
+
+/* MUSIC */
+function playMusic(){audio.play();cover.classList.add("fast");}
+function pauseMusic(){audio.pause();cover.classList.remove("fast");}
+
+/* ROOMS */
+function setRoom(r){
+ let img={
+  bedroom:"https://images.pexels.com/photos/164595/pexels-photo-164595.jpeg",
+  kitchen:"https://images.pexels.com/photos/1080721/pexels-photo-1080721.jpeg",
+  living:"https://images.pexels.com/photos/276528/pexels-photo-276528.jpeg",
+  bathroom:"https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg"
+ }
+ roomImg.src=img[r];
+}
+
+/* FOOD */
+/* 🍔 FOOD UPGRADED SYSTEM */
+let total = 0;
+let foodHistory = [];
+
+function toggleItem(el, price){
+
+  let name = el.innerText.split("₹")[0].trim();
+
+  if(el.classList.contains("selected")){
+    el.classList.remove("selected");
+
+    total -= price;
+
+    // remove last matching item
+    let index = foodHistory.findIndex(f => f.name === name);
+    if(index > -1) foodHistory.splice(index,1);
+
+  } else {
+    el.classList.add("selected");
+
+    total += price;
+    foodHistory.push({name, price});
+  }
+
+  if(total < 0) total = 0;
+
+  updateFood();
+}
+
+/* 🔄 UPDATE FOOD UI */
+function updateFood(){
+
+  document.getElementById("total").innerText = total;
+
+  let box = document.getElementById("foodInfo");
+
+  if(!box) return;
+
+  let count = foodHistory.length;
+  let mostExpensive = foodHistory.reduce((max, item)=>{
+    return item.price > (max?.price || 0) ? item : max;
+  }, null);
+
+  let status = "";
+
+  if(total == 0) status = "No food selected 🍽️";
+  else if(total < 150) status = "Light meal 🥗";
+  else if(total < 300) status = "Normal meal 🍛";
+  else status = "Heavy meal 🍔🔥";
+
+  box.innerHTML = `
+    <p>🍱 Items: ${count}</p>
+    <p>📊 Status: ${status}</p>
+    <p>💰 Total: ₹${total}</p>
+    <p>⭐ Most Expensive: ${mostExpensive ? mostExpensive.name + " ₹" + mostExpensive.price : "None"}</p>
+  `;
+}
+
+/* ↩ UNDO LAST ITEM */
+function undoFood(){
+
+  let last = foodHistory.pop();
+
+  if(!last) return;
+
+  total -= last.price;
+
+  let items = document.querySelectorAll(".food-item");
+
+  items.forEach(el=>{
+    if(el.innerText.includes(last.name)){
+      el.classList.remove("selected");
+    }
+  });
+
+  updateFood();
+}
+
+/* 🧹 CLEAR ALL */
+function clearFood(){
+
+  total = 0;
+  foodHistory = [];
+
+  document.querySelectorAll(".food-item").forEach(el=>{
+    el.classList.remove("selected");
+  });
+
+  updateFood();
+}
+/* WATER */
+/* 💧 WATER UPGRADED SYSTEM */
+let w = 0;
+let waterHistory = [];
+
+function drink(){
+  w += 250;
+  waterHistory.push(250);
+  updateWater();
+}
+
+function resetWater(){
+  w = 0;
+  waterHistory = [];
+  updateWater();
+}
+
+function undoWater(){
+  if(waterHistory.length > 0){
+    w -= waterHistory.pop();
+    if(w < 0) w = 0;
+    updateWater();
+  }
+}
+
+function updateWater(){
+
+  document.getElementById("water").innerText = w;
+
+  // extra info (auto display if element exists)
+  let infoBox = document.getElementById("waterInfo");
+  if(infoBox){
+    let glasses = Math.floor(w / 250);
+    let status = "";
+
+    if(w == 0) status = "No water 💧";
+    else if(w < 1000) status = "Hydration low ⚠️";
+    else if(w < 2000) status = "Good 👍";
+    else status = "Excellent 💪";
+
+    infoBox.innerHTML = `
+      <p>🥤 Glasses: ${glasses}</p>
+      <p>📊 Status: ${status}</p>
+      <p>📦 Total Intake: ${w} ml</p>
+    `;
+  }
+}
+/* VOICE CONTROL */
+function startVoice(){
+  let mic = document.getElementById("micImg");
+  let text = document.getElementById("voiceText");
+
+  let rec = new(window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+  rec.start();
+
+  // 🎤 Mic animation start
+  mic.classList.add("mic-active");
+  text.innerText = "Listening... 🎤";
+
+  rec.onresult = e => {
+    let cmd = e.results[0][0].transcript;
+    text.innerText = cmd;
+
+    // 🎤 Stop animation after speaking
+    mic.classList.remove("mic-active");
+
+    // 🔥 Optional commands
+    if(cmd.includes("light")) lightOn();
+    if(cmd.includes("fan")) fanOn();
+    if(cmd.includes("music")) playMusic();
+  }
+
+  rec.onerror = () => {
+    mic.classList.remove("mic-active");
+    text.innerText = "Error ❌";
+  }
+}
+
+/* GAME */
+let bg = new Image();
+bg.src = "https://images.pexels.com/photos/21365192/pexels-photo-21365192.jpeg";
+
+/* 🎮 OBSTACLE GAME */
+
+let canvas = document.getElementById("gameCanvas");
+let ctx = canvas.getContext("2d");
+
+let player = { x: 20, y: 100, size: 20 };
+let obstacle = { x: 300, y: 50, w: 20, h: 40 };
+
+let score = 0;
+let gameInterval = null;
+let gameRunning = false;
+
+/* ▶ START GAME */
+function startGame(){
+
+  if(gameRunning) return;
+
+  score = 0;
+  player.y = 100;
+  obstacle.x = 300;
+  obstacle.y = Math.random()*150;
+
+  gameRunning = true;
+
+  // glow ON
+  canvas.classList.add("game-active");
+
+  gameInterval = setInterval(updateGame, 30);
+}
+
+/* ⏹ STOP GAME */
+function stopGame(){
+  clearInterval(gameInterval);
+  gameRunning = false;
+
+  // glow OFF
+  canvas.classList.remove("game-active");
+}
+
+function toggleGame(){
+  if(gameRunning){
+    stopGame();
+  }else{
+    startGame();
+  }
+}
+
+function resetGame(){
+  stopGame();
+  score = 0;
+  player.y = 100;
+  obstacle.x = 300;
+  obstacle.y = Math.random()*150;
+  ctx.clearRect(0,0,300,200);
+} 
+
+/* 🔁 GAME LOOP */
+function updateGame(){
+
+  ctx.clearRect(0,0,300,200);
+
+  // PLAYER
+  ctx.fillStyle="lime";
+  ctx.fillRect(player.x,player.y,player.size,player.size);
+
+  // OBSTACLE MOVE
+  obstacle.x -= 5;
+
+  if(obstacle.x < 0){
+    obstacle.x = 300;
+    obstacle.y = Math.random()*150;
+    score++;
+  }
+
+  // DRAW OBSTACLE
+  ctx.fillStyle="red";
+  ctx.fillRect(obstacle.x,obstacle.y,obstacle.w,obstacle.h);
+
+  // COLLISION
+  if(
+    player.x < obstacle.x + obstacle.w &&
+    player.x + player.size > obstacle.x &&
+    player.y < obstacle.y + obstacle.h &&
+    player.y + player.size > obstacle.y
+  ){
+    stopGame();
+    alert("💥 Game Over! Score: " + score);
+  }
+
+  document.getElementById("score").innerText = score;
+}
+
+/* 🎮 CONTROL */
+document.addEventListener("keydown", e=>{
+  if(e.key==="ArrowUp") player.y -= 15;
+  if(e.key==="ArrowDown") player.y += 15;
+});
+
+</script>
+
+</body>
+</html>

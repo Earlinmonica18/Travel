@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Travel Booking</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body background="https://images.pexels.com/photos/10664000/pexels-photo-10664000.jpeg">
+
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h2>TRAVEL</h2>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="hotels.html">Hotels</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Start Your Journey</h1>
+  <button onclick="openPopup()">Book Now</button>
+</div>
+
+<!-- HOTEL CARDS -->
+<div class="cards">
+
+  <div class="card">
+    <img id="img1" src="https://images.pexels.com/photos/35639940/pexels-photo-35639940.jpeg">
+    <h3>Luxury Hotel</h3>
+    <a href="Luxury hotel.html"><button style="margin-top:10px;">Rooms</button></a>
+
+    <button onclick="openPopup()">Book</button>
+  </div>
+
+  <div class="card">
+    <img id="img2" src="https://images.pexels.com/photos/19240394/pexels-photo-19240394.jpeg">
+    <h3>Family Hotel</h3>
+    <a href="Family hotel.html"><button style="margin-top:10px;">Rooms</button></a>
+
+    <button onclick="openPopup()">Book</button>
+  </div>
+
+    <div class="card">
+     <img id="img3" src="https://images.pexels.com/photos/15930255/pexels-photo-15930255.jpeg">
+     <h3>Business Hotel</h3>
+      <a href="Business hotel.html"><button style="margin-top:10px;">Rooms</button></a>
+
+    <button onclick="openPopup()">Book</button>
+  </div>
+
+    <div class="card">
+     <img id="img4" src="https://images.pexels.com/photos/21005729/pexels-photo-21005729.jpeg">
+     <h3>Budget Hotel</h3>
+      <a href="Budget hotel.html"><button style="margin-top:10px;">Rooms</button></a>
+
+    <button onclick="openPopup()">Book</button>
+  </div>
+
+</div>
+
+<!-- POPUP -->
+<div id="popup" class="popup">
+  <div class="popup-content">
+    <h3>Booking Form</h3>
+    <input type="text" placeholder="Name">
+    <input type="date">
+    <button onclick="submitBooking()">Submit</button>
+    <button onclick="closePopup()">Close</button>
+  </div>
+</div>
+
+
+<script src="script.js"></script>
+</body>
+</html>
